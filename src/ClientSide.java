@@ -4,17 +4,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
-/*
- * www.codeurjava.com
- */
+
 public class ClientSide {
 
-	public static void main(String[] args) {
+	public void Launch(){
  
 		Socket clientSocket;
 		BufferedReader in;
 		PrintWriter out;
-		Scanner sc = new Scanner(System.in);//pour lire à partir du clavier
+		Scanner sc = new Scanner(System.in);//pour lire ï¿½ partir du clavier
  
 		try {
 			

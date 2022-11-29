@@ -5,12 +5,10 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
-/*
- * www.codeurjava.com
- */
+
 public class ServerSide {
  
-	public static void main(String[] test) {
+	public void Launch(){
  
 		ServerSocket serveurSocket ;
 		Socket clientSocket ;
@@ -48,7 +46,7 @@ public class ServerSide {
 				public void run() {
 					try {
 						msg = in.readLine();
-						//tant que le client est connecté
+						//tant que le client est connectï¿½
 						while(msg!=null){
 							System.out.println("Client : "+msg);
 							msg = in.readLine();
