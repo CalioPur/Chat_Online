@@ -16,7 +16,7 @@ public class ClientSide {
  
 		try {
 			
-			clientSocket = new Socket("127.0.0.1",4444);
+			clientSocket = new Socket("10.163.3.22",4444);
  
 			//flux pour envoyer
 			out = new PrintWriter(clientSocket.getOutputStream());
