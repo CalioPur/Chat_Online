@@ -15,23 +15,23 @@ public class MainClient {
 			PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 			Scanner scanner = new Scanner(System.in); 
 			
-			String userInput = null;
+			String userInput;
 			String reponse;
 			String clientName = "none";
 			
 			ClientThread clientThread = new ClientThread(socket);
 			clientThread.start();
 			
-			while(!userInput.equals("exit")) {
+			do {
 				if(clientName.equals("none")) {
 					System.out.println("please enter your name");
 					userInput = scanner.nextLine();
 					clientName = userInput;
-					output.println(userInput);
+					output.println(userInput + "entered the chat");
 				}
 				else {
 					String message = ("|"+clientName +"| :");
-					System.out.println(message);
+					//System.out.println(message);
 					userInput = scanner.nextLine();
 					output.println(message + " " + userInput);
 					
@@ -39,7 +39,7 @@ public class MainClient {
 						break;
 					}
 				}
-			}
+			}while (!userInput.equals("exit"));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
