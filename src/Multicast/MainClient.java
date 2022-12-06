@@ -96,7 +96,9 @@ public class MainClient implements MouseListener{
 			userInput = textField.getText();
 			textField.setText("");
 			output.println(message + " " + userInput);
-			
+			if(userInput.equals("exit")){
+				System.exit(0);
+			}
 		}
 		
 	}
