@@ -17,6 +17,8 @@ import com.google.gson.Gson;
 
 //cipher : https://jenkov.com/tutorials/java-cryptography/cipher.html
 
+//https://stackoverflow.com/questions/14204437/convert-byte-array-to-secret-key
+
 public class AESModule {
 	
 	private Gson gson;
@@ -26,11 +28,13 @@ public class AESModule {
 	}
 	
 	//generates a random key and calls upon exportKeyToFile
-	public void generateKey() throws NoSuchAlgorithmException, IOException {
+	public Key generateKey() throws NoSuchAlgorithmException, IOException {
 		KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 		Key key = keyGen.generateKey();
 		
 		exportKeyToFile(key);
+		
+		return key;
 	}
 	
 	//converts key to JSON file and opens the file explorer
@@ -54,8 +58,8 @@ public class AESModule {
 		
 	}
 	
-	//requests JSON file to convert into a key it returns
-	public byte[] importKeyFromFile() throws IOException {
+	//requests JSON file to convert into a key it returns | may change return type from Key to SecretKey
+	public Key importKeyFromFile() throws IOException {
 		
 		//select file
 		JFileChooser chooser = new JFileChooser();
@@ -66,14 +70,16 @@ public class AESModule {
 		
 		//java.lang.reflect.Type type = new TypeToken<HashMap<Integer,ArrayList<ArrayList<Integer>>>>(){}.getType();
 		
-		return gson.fromJson(temporaryFileString, byte[].class);
+		byte[] key = gson.fromJson(temporaryFileString, byte[].class);
+		
+		return new SecretKeySpec(key,"AES");
 	}
 	
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
 		AESModule aes = new AESModule();
 		//aes.generateKey(); -> ok
-		byte[] key = aes.importKeyFromFile();
-		SecretKey k = new SecretKeySpec(key,"AES");
+		//byte[] key = aes.importKeyFromFile();
+		//SecretKey k = new SecretKeySpec(key,"AES");
 	}
 
 }

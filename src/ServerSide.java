@@ -4,7 +4,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.Key;
 import java.util.Scanner;
+
+import javax.crypto.SecretKey;
 
 public class ServerSide {
  
@@ -15,6 +18,9 @@ public class ServerSide {
 		BufferedReader in;
 		PrintWriter out;
 		Scanner sc=new Scanner(System.in);
+		
+		AESModule aes = new AESModule();
+		Key key;
 	 
 		try {
 			serveurSocket = new ServerSocket(4444);
@@ -24,6 +30,9 @@ public class ServerSide {
 			
 			//on creer deux thread pour pouvoir envoyer un message et recevoir un message 
 			//sans avoir a alterner l'un et lautre a chaque fois si elle etait dans la meme boucle while true
+			
+			//ask for key from file
+			key = aes.importKeyFromFile();
 			
 			Thread envoi= new Thread(new Runnable() {
 				String msg;

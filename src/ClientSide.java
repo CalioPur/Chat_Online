@@ -3,16 +3,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 public class ClientSide {
 
-	public void Launch(){
+	public void Launch() throws NoSuchAlgorithmException{
  
 		Socket clientSocket;
 		BufferedReader in;
 		PrintWriter out;
 		Scanner sc = new Scanner(System.in);//pour lire � partir du clavier
+		
+		AESModule aes = new AESModule();
+		Key key;
  
 		try {
 			
@@ -22,6 +27,9 @@ public class ClientSide {
 			out = new PrintWriter(clientSocket.getOutputStream());
 			//flux pour recevoir
 			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			
+			//create key
+			key = aes.generateKey();
  
 			Thread envoyer = new Thread(new Runnable() {
 				String msg;
