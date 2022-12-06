@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class MainClient implements MouseListener{
+	
 	Socket socket;
 	BufferedReader input;
 	PrintWriter output;
@@ -51,11 +52,11 @@ public class MainClient implements MouseListener{
 	}
 	public static void main(String[] args) {
 		try {
-			MainClient main = new MainClient();
+			MainClient main  = new MainClient();
 			ClientThread clientThread = new ClientThread(main.socket, main.display, main.textField, main.send);
 			clientThread.start();
 			main.display.add(new JLabel("<html><font color='red'>|SYSTEM|: </font> Chose a username</html>"), BorderLayout.WEST);
-			do {
+			/*do {
 				if(main.clientName.equals("none")) {
 					System.out.println("please enter your name");
 					main.userInput = main.scanner.nextLine();
@@ -72,7 +73,7 @@ public class MainClient implements MouseListener{
 						break;
 					}
 				}
-			}while (!main.userInput.equals("exit"));
+			}while (!main.userInput.equals("exit"));*/
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -83,7 +84,20 @@ public class MainClient implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+		if(clientName.equals("none")) {
+			userInput = textField.getText();
+			clientName = userInput;
+			textField.setText("");
+			output.println(userInput + " entered the chat");
+		}
+		else {
+			String message = ("|"+clientName +"| :");
+			//System.out.println(message);
+			userInput = textField.getText();
+			textField.setText("");
+			output.println(message + " " + userInput);
+			
+		}
 		
 	}
 
