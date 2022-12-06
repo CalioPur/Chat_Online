@@ -1,5 +1,7 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.*;
@@ -22,9 +24,18 @@ import com.google.gson.Gson;
 public class AESModule {
 	
 	private Gson gson;
+	private Cipher cipher;
 	
 	public AESModule() {
 		this.gson = new Gson();
+		
+		try {
+			this.cipher = Cipher.getInstance("AES");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	//generates a random key and calls upon exportKeyToFile
@@ -75,11 +86,41 @@ public class AESModule {
 		return new SecretKeySpec(key,"AES");
 	}
 	
-	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
+	//crypter - encrypts message with given key
+	public byte[] encryptMessage(String str, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		cipher.init(Cipher.ENCRYPT_MODE, key);
+		return cipher.doFinal(str.getBytes());
+	}
+	
+	//crypter - encrypts message with given key and returns it as a string
+	public String encryptMessageString(String str, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		return new String(encryptMessage(str,key),"ISO-8859-1");
+	}
+	
+	//decrypter - decrypts message with given key (byte version)
+	public String decryptMessage(byte[] bytes, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		cipher.init(Cipher.DECRYPT_MODE, key);
+		return new String(cipher.doFinal(bytes));
+	}
+	
+	//decrypter - decrypts message with given key (string version)
+	public String decryptMessage(String str, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		//String str is byte[] (encrypted message) converted to string
+		return decryptMessage(str.getBytes("ISO-8859-1"),key);
+
+	}
+	
+	public static void main(String[] args) throws NoSuchAlgorithmException, IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 		AESModule aes = new AESModule();
-		//aes.generateKey(); -> ok
+		Key key = aes.generateKey();
 		//byte[] key = aes.importKeyFromFile();
 		//SecretKey k = new SecretKeySpec(key,"AES");
+		
+		//crypting / decrypting test
+		String init = "Hello world !";
+		String cryptedInitString = aes.encryptMessageString(init, key);
+		System.out.println("init : "+init+" | crypted string : "+cryptedInitString);
+		System.out.println("decrypted through string : "+aes.decryptMessage(cryptedInitString, key));
 	}
 
 }
