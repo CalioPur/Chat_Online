@@ -22,6 +22,10 @@ public class ClientThread extends Thread{
 			while(true) {
 				String reponse = input.readLine();
 				System.out.println(reponse);
+				
+				//disconnects client
+				//(to lower case to prevent case sensitivity)
+				if(reponse.toLowerCase().equals("bye")) break;
 			}
 		}
 		catch(IOException e){

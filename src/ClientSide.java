@@ -31,6 +31,11 @@ public class ClientSide {
 						msg = sc.nextLine();
 						out.println(msg);
 						out.flush();
+						
+						//disconnects client
+						//(to lower case to prevent case sensitivity)
+						if(msg.toLowerCase().equals("bye")) System.exit(0);
+						
 					}
 				}
 			});
