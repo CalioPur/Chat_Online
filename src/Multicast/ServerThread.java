@@ -1,20 +1,27 @@
 package Multicast;
 
+import java.awt.BorderLayout;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+
 public class ServerThread extends Thread{
 	private Socket socket;
 	private ArrayList<ServerThread> threadList;
 	private PrintWriter output;
+	private JPanel panel;
 	
-	public ServerThread(Socket socket, ArrayList<ServerThread> threads) {
+	public ServerThread(Socket socket, ArrayList<ServerThread> threads, JPanel panel) {
 		this.socket = socket;
 		this.threadList = threads;
-		
+		this.panel = panel;
 	}
 	
 	@Override
@@ -30,6 +37,8 @@ public class ServerThread extends Thread{
 				}
 				printToAllClients(outputString);
 				System.out.println("Server received : " + outputString);
+				panel.add(new JLabel(outputString), BorderLayout.WEST);
+				panel.updateUI();
 				
 			}
 		}
