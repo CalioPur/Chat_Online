@@ -37,9 +37,6 @@ public class ClientThread extends Thread {
 				System.out.println(reponse);
 				panel.add(new JLabel(reponse), BorderLayout.WEST);
 				panel.updateUI();
-				//disconnects client
-				//(to lower case to prevent case sensitivity)
-				if(reponse.toLowerCase().equals("bye")) break;
 			}
 		}
 		catch(IOException e){
