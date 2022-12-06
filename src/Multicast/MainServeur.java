@@ -13,7 +13,8 @@ public class MainServeur {
     public static void main(String[] args) {
     	ArrayList<ServerThread> MyThread = new ArrayList<>();
     	JPanel panel = new JPanel();
-    	panel.setLayout(new GridLayout(0,1));
+    	GridLayout grl = new GridLayout(0,1,10,0);
+    	panel.setLayout(grl);
     	
     	ServerVue vue = new ServerVue(panel);
         try (ServerSocket serverSocket = new ServerSocket(5000)) {

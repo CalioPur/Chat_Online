@@ -37,7 +37,7 @@ public class ServerThread extends Thread{
 				}
 				printToAllClients(outputString);
 				System.out.println("Server received : " + outputString);
-				panel.add(new JLabel(outputString), BorderLayout.WEST);
+				panel.add(new JLabel(outputString), BorderLayout.PAGE_START);
 				panel.updateUI();
 				
 			}
