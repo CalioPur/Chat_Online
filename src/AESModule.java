@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 
 //https://stackoverflow.com/questions/14204437/convert-byte-array-to-secret-key
 
+//https://stackoverflow.com/questions/16192140/cipher-what-is-the-reason-for-illegalblocksizeexception
 public class AESModule {
 	
 	private Gson gson;
@@ -30,6 +31,7 @@ public class AESModule {
 		this.gson = new Gson();
 		
 		try {
+			//AES/ECB/PKCS5Padding
 			this.cipher = Cipher.getInstance("AES");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -86,6 +88,21 @@ public class AESModule {
 		return new SecretKeySpec(key,"AES");
 	}
 	
+	//encrypts message with a given key and sends it as an array of bytes converted to a string
+	public String encryptMessage(String str, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		cipher.init(Cipher.ENCRYPT_MODE, key);
+		byte[] bytes = cipher.doFinal(str.getBytes());
+		return gson.toJson(bytes);
+	}
+	
+	//decrypts message (array of bytes converted to a string) with a given key and returns it as a string
+	public String decryptMessage(String str, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		cipher.init(Cipher.DECRYPT_MODE, key);
+		byte[] bytes = gson.fromJson(str, byte[].class);
+		return new String(cipher.doFinal(bytes));
+	}
+	
+	/*
 	//crypter - encrypts message with given key
 	public byte[] encryptMessage(String str, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 		cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -108,19 +125,19 @@ public class AESModule {
 		//String str is byte[] (encrypted message) converted to string
 		return decryptMessage(str.getBytes("ISO-8859-1"),key);
 
-	}
+	}*/
 	
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-		AESModule aes = new AESModule();
-		Key key = aes.generateKey();
+		/*AESModule aes = new AESModule();
+		Key key = aes.generateKey();*/
 		//byte[] key = aes.importKeyFromFile();
 		//SecretKey k = new SecretKeySpec(key,"AES");
 		
 		//crypting / decrypting test
-		String init = "Hello world !";
+		/*String init = "Hello world !";
 		String cryptedInitString = aes.encryptMessageString(init, key);
 		System.out.println("init : "+init+" | crypted string : "+cryptedInitString);
-		System.out.println("decrypted through string : "+aes.decryptMessage(cryptedInitString, key));
+		System.out.println("decrypted through string : "+aes.decryptMessage(cryptedInitString, key));*/
 	}
 
 }

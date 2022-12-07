@@ -2,10 +2,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.SecretKey;
 
 public class ClientSide {
 
@@ -21,23 +27,43 @@ public class ClientSide {
  
 		try {
 			
-			clientSocket = new Socket("10.163.3.22",4444);
+			clientSocket = new Socket("localhost",4444);
  
 			//flux pour envoyer
 			out = new PrintWriter(clientSocket.getOutputStream());
 			//flux pour recevoir
 			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			
-			//create key
+			//create key 
 			key = aes.generateKey();
+			
+			//you may import key from file as well
+			//key = aes.importKeyFromFile();
  
 			Thread envoyer = new Thread(new Runnable() {
 				String msg;
+				String cryptedMsg;
 				@Override
 				public void run() {
 					while(true){
 						msg = sc.nextLine();
-						out.println(msg);
+						
+						try {
+							cryptedMsg = aes.encryptMessage(msg, key);
+						} catch (InvalidKeyException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IllegalBlockSizeException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (BadPaddingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						//out.println(msg);
+						out.println(cryptedMsg);
+						
 						out.flush();
 						
 						//disconnects client
@@ -56,10 +82,23 @@ public class ClientSide {
 					try {
 						msg = in.readLine();
 						while(msg!=null){
+							//crypted
 							System.out.println("Serveur : "+msg);
+							//decrypted
+							System.out.println("Serveur (decrypted) : "+aes.decryptMessage(msg, key));
+							
 							msg = in.readLine();
 						}
 					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (InvalidKeyException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalBlockSizeException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (BadPaddingException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

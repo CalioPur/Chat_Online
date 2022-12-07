@@ -2,11 +2,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.util.Scanner;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
 
 public class ServerSide {
@@ -36,12 +40,29 @@ public class ServerSide {
 			
 			Thread envoi= new Thread(new Runnable() {
 				String msg;
+				String cryptedMsg;
 				
 				@Override
 				public void run() {
 					while(true){
 						msg = sc.nextLine();
-						out.println(msg);
+						
+						//sends crypted message instead of classic message using the shared key
+						try {
+							cryptedMsg = aes.encryptMessage(msg, key);
+						} catch (InvalidKeyException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IllegalBlockSizeException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (BadPaddingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						//out.println(msg);
+						out.println(cryptedMsg);
 						out.flush();
 					}
 				}
@@ -57,11 +78,23 @@ public class ServerSide {
 						msg = in.readLine();
 						//tant que le client est connect�
 						while(msg!=null){
+							//crypted
 							System.out.println("Client : "+msg);
+							//decrypted
+							System.out.println("Client (decrypted) : "+aes.decryptMessage(msg, key));
 							msg = in.readLine();
 						}
 					} 
 					catch (IOException e) {
+						e.printStackTrace();
+					} catch (InvalidKeyException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalBlockSizeException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (BadPaddingException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
