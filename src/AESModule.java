@@ -58,7 +58,7 @@ public class AESModule {
 		
 	}
 	
-	//requests JSON file to convert into a key it returns | may change return type from Key to SecretKey
+	//requests JSON file to convert into a key it returns
 	public Key importKeyFromFile() throws IOException {
 		
 		//select file
@@ -67,8 +67,6 @@ public class AESModule {
         
         Path pathOfFile = Path.of(chooser.getSelectedFile().toString());
 		String temporaryFileString = Files.readString(pathOfFile);
-		
-		//java.lang.reflect.Type type = new TypeToken<HashMap<Integer,ArrayList<ArrayList<Integer>>>>(){}.getType();
 		
 		byte[] key = gson.fromJson(temporaryFileString, byte[].class);
 		
