@@ -11,8 +11,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Scanner;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,7 +40,11 @@ public class MainClient implements MouseListener{
 	JButton send;
 	
 	ClientVue vue;
-	public MainClient() throws IOException{
+	
+	private RSAModule rsa;
+	private PublicKey key;
+	
+	public MainClient() throws IOException, InvalidKeySpecException, NoSuchAlgorithmException{
 		socket = new Socket("localhost", 5000);
 		input = new BufferedReader(new java.io.InputStreamReader(socket.getInputStream())); 
 		output = new PrintWriter(socket.getOutputStream(), true);
@@ -49,13 +59,19 @@ public class MainClient implements MouseListener{
 		send= new JButton("envoyer");
 		send.addMouseListener(this);
 		vue = new ClientVue(display, textField, send);
+		
+		this.rsa = new RSAModule();
+		
+		this.key = rsa.importKeyFromFile();
 	}
-	public static void main(String[] args) {
+	
+	
+	public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException {
 		try {
 			MainClient main  = new MainClient();
 			ClientThread clientThread = new ClientThread(main.socket, main.display, main.textField, main.send);
 			clientThread.start();
-			main.display.add(new JLabel("<html><font color='red'>|SYSTEM|: </font> Chose a username</html>"), BorderLayout.WEST);
+			main.display.add(new JLabel("<html><font color='red'>|SYSTEM|: </font> Choose a username</html>"), BorderLayout.WEST);
 			/*do {
 				if(main.clientName.equals("none")) {
 					System.out.println("please enter your name");
@@ -88,14 +104,34 @@ public class MainClient implements MouseListener{
 			userInput = textField.getText();
 			clientName = userInput;
 			textField.setText("");
-			output.println(userInput + " entered the chat");
+			//output.println(userInput + " entered the chat");
+			try {
+				output.println(rsa.encryptMessage(userInput+ " entered the chat", key));
+			} catch (InvalidKeyException e1) {
+				e1.printStackTrace();
+			} catch (IllegalBlockSizeException e1) {
+				e1.printStackTrace();
+			} catch (BadPaddingException e1) {
+				e1.printStackTrace();
+			}
 		}
 		else {
 			String message = ("|"+clientName +"| :");
 			//System.out.println(message);
 			userInput = textField.getText();
 			textField.setText("");
-			output.println(message + " " + userInput);
+			
+			//output.println(message + " " + userInput);
+			try {
+				output.println(rsa.encryptMessage(message + " " + userInput, key));
+			} catch (InvalidKeyException e1) {
+				e1.printStackTrace();
+			} catch (IllegalBlockSizeException e1) {
+				e1.printStackTrace();
+			} catch (BadPaddingException e1) {
+				e1.printStackTrace();
+			}
+			
 			if(userInput.equals("exit")){
 				System.exit(0);
 			}
