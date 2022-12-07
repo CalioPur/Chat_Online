@@ -14,14 +14,6 @@ import javax.swing.JFileChooser;
 
 import com.google.gson.Gson;
 
-//documentation https://howtodoinjava.com/java/java-security/java-aes-encryption-example/
-// https://www.baeldung.com/java-secure-aes-key
-
-//cipher : https://jenkov.com/tutorials/java-cryptography/cipher.html
-
-//https://stackoverflow.com/questions/14204437/convert-byte-array-to-secret-key
-
-//https://stackoverflow.com/questions/16192140/cipher-what-is-the-reason-for-illegalblocksizeexception
 public class AESModule {
 	
 	private Gson gson;
@@ -31,7 +23,6 @@ public class AESModule {
 		this.gson = new Gson();
 		
 		try {
-			//AES/ECB/PKCS5Padding
 			this.cipher = Cipher.getInstance("AES");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -65,10 +56,6 @@ public class AESModule {
 		      }
 		}
 		
-		/*FileWriter file = new FileWriter(chooser.getSelectedFile()+".json");
-        file.write(gson.toJson(key.getEncoded()));
-        file.close();*/
-		
 	}
 	
 	//requests JSON file to convert into a key it returns | may change return type from Key to SecretKey
@@ -101,31 +88,6 @@ public class AESModule {
 		byte[] bytes = gson.fromJson(str, byte[].class);
 		return new String(cipher.doFinal(bytes));
 	}
-	
-	/*
-	//crypter - encrypts message with given key
-	public byte[] encryptMessage(String str, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-		cipher.init(Cipher.ENCRYPT_MODE, key);
-		return cipher.doFinal(str.getBytes());
-	}
-	
-	//crypter - encrypts message with given key and returns it as a string
-	public String encryptMessageString(String str, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
-		return new String(encryptMessage(str,key),"ISO-8859-1");
-	}
-	
-	//decrypter - decrypts message with given key (byte version)
-	public String decryptMessage(byte[] bytes, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-		cipher.init(Cipher.DECRYPT_MODE, key);
-		return new String(cipher.doFinal(bytes));
-	}
-	
-	//decrypter - decrypts message with given key (string version)
-	public String decryptMessage(String str, Key key) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
-		//String str is byte[] (encrypted message) converted to string
-		return decryptMessage(str.getBytes("ISO-8859-1"),key);
-
-	}*/
 	
 	public static void main(String[] args) throws NoSuchAlgorithmException, IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 		/*AESModule aes = new AESModule();
